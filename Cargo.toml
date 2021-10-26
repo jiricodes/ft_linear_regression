@@ -1,0 +1,17 @@
+[package]
+name = "ft_linear_regression"
+version = "0.1.0"
+edition = "2021"
+authors =["jnovotny <jnovotny@student.hive.fi>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "train"
+path = "src/train/main.rs"
+
+[[bin]]
+name = "predict"
+path = "src/predict/main.rs"
+
+[dependencies]
