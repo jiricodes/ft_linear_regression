@@ -22,19 +22,19 @@ impl Trainer {
             }
             let mut split_line = line.split(',');
             if line_num != 0 {
-                let km: u64 = split_line
+                let x: u64 = split_line
                     .next()
                     .unwrap_or_else(|| "")
                     .trim()
                     .parse()
                     .unwrap();
-                let price: u64 = split_line
+                let y: u64 = split_line
                     .next()
                     .unwrap_or_else(|| "")
                     .trim()
                     .parse()
                     .unwrap();
-                data.insert(km, price);
+                data.insert(x, y);
             } else {
                 labels[0] = split_line
                     .next()
