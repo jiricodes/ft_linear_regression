@@ -95,14 +95,11 @@ impl Trainer {
             min_key = min_key.min(k);
             max_key = max_key.max(k);
         }
-        dbg!(&training_set);
-        dbg!(&min_key);
-        dbg!(&max_key);
         // normalize keys
         for (key, _) in training_set.iter_mut() {
             *key = (*key - min_key) / (max_key - min_key);
         }
-        dbg!(&training_set);
+  
         // Get training set len and invert it, so we don't need to div in each loop
         // m_ratio == 1 / m as in formula.
         let m_ratio = 1.0 / training_set.len() as f64;
@@ -199,6 +196,10 @@ pub struct TrainerContext {
 }
 
 impl TrainerContext {
+	/// Helper function to decide whether the main linear regression loop should continue
+	/// 
+	/// The training is done if number of iteration is reached or if not specified
+	/// the temporal difference limit is reached
     fn is_done(&self, current_iter: usize, temp_diff: (f64, f64)) -> bool {
         match self.iterations.is_some() {
             true => current_iter >= self.iterations.unwrap(),

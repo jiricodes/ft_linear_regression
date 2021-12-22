@@ -21,6 +21,5 @@ fn main() {
     let filename = matches.value_of("datafile").unwrap();
     println!("Input data location {}", filename);
     let mut trainer = Trainer::load(filename, Option::None);
-    dbg!(&trainer);
     trainer.train();
 }
