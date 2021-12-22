@@ -9,3 +9,8 @@ TBC
 - resources
 - simple wiki
 - docs
+
+## To-Do
+- use plottters to show training results / animation?
+    - https://docs.rs/plotters/latest/plotters/index.html
+    - https://github.com/38/plotters
