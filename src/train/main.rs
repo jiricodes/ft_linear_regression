@@ -20,6 +20,7 @@ fn main() {
         .get_matches();
     let filename = matches.value_of("datafile").unwrap();
     println!("Input data location {}", filename);
-    let trainer = Trainer::load(filename, Option::None);
-    dbg!(trainer);
+    let mut trainer = Trainer::load(filename, Option::None);
+    dbg!(&trainer);
+    trainer.train();
 }
