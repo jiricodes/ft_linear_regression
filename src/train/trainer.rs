@@ -1,17 +1,30 @@
+//! ft_linear_regression training module
+//!
+//!
 use std::collections::HashMap;
 use std::fs;
 
-mod keyf64;
-use keyf64::KeyF64;
+use super::keyf64::KeyF64;
 
+/// Main training struct
 #[derive(Debug)]
 pub struct Trainer {
+    /// Key value pairs of data for linear regression
     data: HashMap<KeyF64, f64>,
+    /// labels for key value pairs in `self.data`
     labels: [String; 2],
 }
 
 impl Trainer {
-    pub fn new(filename: &str) -> Self {
+    /// Function that loads the `Trainer` struct from given file.
+    ///
+    /// There are certain assuptions about the file format... TBC
+    ///
+    /// Example:
+    ///
+    /// TBC
+    ///
+    pub fn load(filename: &str) -> Self {
         let contents =
             fs::read_to_string(filename).expect(&format!("Reading \"{}\" file failed", filename));
         let mut data: HashMap<KeyF64, f64> = HashMap::new();

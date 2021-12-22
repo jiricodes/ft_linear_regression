@@ -3,6 +3,7 @@ use clap::{App, Arg};
 
 mod trainer;
 use trainer::Trainer;
+mod keyf64;
 
 fn main() {
     let matches = App::new(crate_name!())
@@ -19,6 +20,6 @@ fn main() {
         .get_matches();
     let filename = matches.value_of("datafile").unwrap();
     println!("Input data location {}", filename);
-    let trainer = Trainer::new(filename);
+    let trainer = Trainer::load(filename);
     dbg!(trainer);
 }

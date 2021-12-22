@@ -1,3 +1,18 @@
+//! This is an utility mod to enable using Floats in HashMaps.
+//!
+//! Default float does not implement Hash trait due to its nature.
+//! This struct transform the float to its components that are
+//! individually hashable. The transformation in both directions should be lossless.
+//!
+//! Example:
+//! ```
+//! fn main() {
+//!     let x: f64 = 123.123456789;
+//!     let x_key: KeyF64 = x.into();
+//!     let y: f64 = x_key.into();
+//!     assert_eq!(x, y);
+//! }
+//! ```
 use std::fmt;
 
 #[derive(Hash, PartialEq, Eq)]
