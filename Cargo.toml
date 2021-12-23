@@ -16,9 +16,9 @@ path = "src/predict/main.rs"
 
 [dependencies]
 clap = "2.33.3"
+rand = "0.8.4"
 
 [target.train.dependencies]
 plotters = "0.3.1"
 
-[dev-dependencies]
-rand = "0.8.4"
+# rand-distributions = "0.1.2"
