@@ -29,11 +29,8 @@ pub struct Trainer {
 impl Trainer {
     /// Function that loads the `Trainer` struct from given file.
     ///
-    /// There are certain assuptions about the file format... TBC
-    ///
-    /// Example:
-    ///
-    /// TBC
+    /// Assumptions: Takes only two columns, first line contains labels of those columns,
+	/// each line is parsed to f64
     ///
     pub fn load(filename: &str, ctx: Option<TrainerContext>) -> Self {
         let contents =
@@ -164,8 +161,24 @@ impl Trainer {
 
         // Scale theta1 back
         self.ctx.theta.1 = self.ctx.theta.1 / (extremes.1 - extremes.0);
-        dbg!(&self.ctx);
     }
+
+	pub fn test_accuracy(&self) {
+		if self.test_set.len() == 0 {
+			println!("No test set available");
+			return ;
+		}
+		// Accumulated error
+		let mut acc: f64 = 0.0;
+		// Loop over test set
+		for (key, val) in self.test_set.iter() {
+			// estimate value of a key
+			let est = self.ctx.theta.0 + (self.ctx.theta.1 * key);
+			acc += (val - est).abs() / est;
+		}
+		let avg_error = acc / self.test_set.len() as f64;
+		println!("Average error ~{:.3}", avg_error);
+	}
 }
 
 /// Context struct for trainer.
