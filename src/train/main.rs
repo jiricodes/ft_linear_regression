@@ -22,5 +22,5 @@ fn main() {
     println!("Input data location {}", filename);
     let mut trainer = Trainer::load(filename, Option::None);
     trainer.train();
-	trainer.test_accuracy();
+    trainer.test_accuracy();
 }

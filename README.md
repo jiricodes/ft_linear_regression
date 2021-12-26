@@ -11,6 +11,11 @@ TBC
 - docs
 
 ## To-Do
+- train - save model to file
+- predict - load theta and labels
+	- predict
+	- print
+	- errors
 - use plottters to show training results / animation?
     - https://docs.rs/plotters/latest/plotters/index.html
     - https://github.com/38/plotters
@@ -20,3 +25,4 @@ TBC
 	- [ ] TD over time?
 
 - live monitoring? e.g. pause every x iterations
+- Error management - currently panics

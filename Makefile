@@ -18,6 +18,7 @@ test:
 
 build:
 	cargo build --release
+	-make fclean
 	mkdir -p $(BIN_DIR)
 	mv $(TARGETS) $(BIN_DIR)/
 
@@ -25,4 +26,7 @@ train:
 	./$(BIN_DIR)/train -f data/subject_data.csv
 
 predict:
-	./$(BIN_DIR)/predict
+	./$(BIN_DIR)/predict -f data/model
+
+fclean:
+	rm -r $(BIN_DIR)
