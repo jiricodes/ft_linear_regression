@@ -1,10 +1,10 @@
-//! ft_linear_regression training module
+//! # ft_linear_regression training module
 //!
 //! As per [subject](../../../../resources/ft_linear_regression.en.pdf) the followig formulas are used:
 //! - price estimation `estimatePrice(mileage) = theta0 + (theta1 * mileage)`
 //! - training formulas
-//!     - tmp_theta0 = learningRate * (1 / m) * Sum(i=0; m-1)(estimatePrice(mileage[i]) - price[i])`
-//!     - tmp_theta1 = learningRate * (1 / m) * Sum(i=0; m-1)(estimatePrice(mileage[i]) - price[i]) * mileage[i]`
+//!     - `tmp_theta0 = learningRate * (1 / m) * Sum(i=0; m-1)(estimatePrice(mileage[i]) - price[i])`
+//!     - `tmp_theta1 = learningRate * (1 / m) * Sum(i=0; m-1)(estimatePrice(mileage[i]) - price[i]) * mileage[i]`
 //!     - where m is length of the dataset
 use std::fs;
 use std::fs::File;

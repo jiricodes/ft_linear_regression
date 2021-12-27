@@ -17,7 +17,7 @@ impl Predictor {
 	/// x_label y_label
 	/// theta_0 theta_1
 	/// ```
-	/// where labels are string and theta is f64 compatible
+	/// where labels are string and theta is [`f64`](https://doc.rust-lang.org/std/primitive.f64.html) compatible
 	///
 	pub fn load(filename: &str) -> Self {
 		let mut labels: [String; 2] = [String::new(), String::new()];
@@ -52,6 +52,11 @@ impl Predictor {
 	}
 
 	/// Makes the prediction for given value
+	///
+	/// Uses formula:
+	/// ```text
+	/// estimate = theta.0 + (theta.1 * value)
+	/// ```
 	pub fn predict(&self, value: f64) {
 		let estimate = self.theta.0 + (self.theta.1 * value);
 		println!(

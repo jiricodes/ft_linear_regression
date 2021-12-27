@@ -1,9 +1,26 @@
+//! # Linear Regression Predictor
+//! Uses a model trained by `train` crate to estimate values from a given key.
+//! ## Usage
+//! ```text
+//! USAGE:
+//! predict [OPTIONS] --modelfile <model>
+//!
+//! FLAGS:
+//!     -h, --help       Prints help information
+//!     -V, --version    Prints version information
+//!
+//! OPTIONS:
+//!     -k, --key <key>            Key to use in value estimation, using trained linear regression model.
+//!     -f, --modelfile <model>    Path to trained linear regression model
+//! ```
 use clap::{crate_authors, crate_name, crate_version, value_t};
 use clap::{App, Arg};
 
 mod predictor;
 use predictor::Predictor;
-
+/// Handles user input
+///
+/// Helper function that handles user input.
 fn ask_key(labels: &[String; 2]) -> f64 {
 	use std::io::{stdin, stdout, Write};
 	let mut s = String::new();
@@ -27,7 +44,7 @@ fn ask_key(labels: &[String; 2]) -> f64 {
 	}
 	val.unwrap()
 }
-
+/// Main
 fn main() {
 	println!("\n\t## PREDICTOR ##\n");
 	let matches = App::new(crate_name!())

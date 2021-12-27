@@ -1,3 +1,4 @@
+//! Helper module that handles command line arguments
 use clap::{crate_authors, crate_name, crate_version};
 use clap::{App, Arg, ArgMatches};
 
@@ -6,6 +7,7 @@ pub struct CmdArgs<'a> {
 }
 
 impl<'a> CmdArgs<'a> {
+	/// Default constructor
 	pub fn new() -> Self {
 		let matches = App::new(crate_name!())
 		.author(crate_authors!("\n"))
@@ -70,6 +72,14 @@ impl<'a> CmdArgs<'a> {
 		Self { matches }
 	}
 
+	/// Dataset inut file getter
+	///
+	/// Example:
+	/// ```
+	/// let args = CmdArgs::new();
+	/// let dataset_path = args.get_infile();
+	/// dbg!(dataset_path);
+	/// ```
 	pub fn get_infile(&self) -> &str {
 		self.matches.value_of("datafile").unwrap()
 	}
