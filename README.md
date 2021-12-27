@@ -70,11 +70,6 @@ make doc
 ```
 Compiles and opens documentation
 
-## Resources
-TBC
-- resources
-- simple wiki
-- docs
 
 ## To-Do
 

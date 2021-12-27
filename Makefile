@@ -13,6 +13,7 @@ all:
 	@echo "Training model for $(DATASET)"
 	@make $(MAKEOPTIONS) train
 	@make $(MAKEOPTIONS) predict
+	@open stats/result.png
 
 rust:
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh

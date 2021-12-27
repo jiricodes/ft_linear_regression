@@ -13,6 +13,8 @@ use std::io::prelude::*;
 use rand::distributions::Standard;
 use rand::prelude::*;
 
+use plotters::prelude::*;
+
 use super::arguments::CmdArgs;
 
 /// Main training struct
@@ -184,6 +186,28 @@ impl Trainer {
 		println!("Average error ~{:.3}", avg_error);
 	}
 
+	fn get_bounding_box(&self, offset: f64, steps: f64) -> (f64, f64, f64, f64, f64) {
+		let mut x_min = std::f64::MAX;
+		let mut x_max = std::f64::MIN;
+		let mut y_min = std::f64::MAX;
+		let mut y_max = std::f64::MIN;
+		for (x, y) in self.data.iter() {
+			x_min = x_min.min(*x);
+			x_max = x_max.max(*x);
+			y_min = y_min.min(*y);
+			y_max = y_max.max(*y);
+		}
+		let m = ((x_max - x_min) * (x_max - x_min) + (y_max - y_min) * (y_max - y_min)).sqrt();
+		let x_off = (x_max - x_min) * offset;
+		let y_off = (y_max - y_min) * offset;
+		(
+			x_min - x_off,
+			y_min - y_off,
+			x_max + x_off,
+			y_max + y_off,
+			m / steps,
+		)
+	}
 	/// Saves labels and theta values into a file.
 	///
 	/// If the path_overwrite is `Option::None`, then `TrainerContext::outfile` is used.
@@ -198,6 +222,54 @@ impl Trainer {
 		);
 		file.write_all(out.as_bytes())?;
 		Ok(())
+	}
+
+	pub fn plot_result(&self) {
+		let path = format!("{}/result.png", self.ctx.stats_dir);
+
+		let root = BitMapBackend::new(&path, (1024, 768)).into_drawing_area();
+		root.fill(&WHITE).expect("Failed to fill the graph");
+		let root = root
+			.titled("ft_linear_regression", ("sans-serif", 40))
+			.unwrap();
+
+		let bbox = self.get_bounding_box(0.1, 100.0);
+
+		let mut scatter_ctx = ChartBuilder::on(&root)
+			.x_label_area_size(40)
+			.y_label_area_size(80)
+			.caption(
+				&format!(
+					"seed: {:?}; ratio {}",
+					self.ctx.rng_seed, self.ctx.training_distribution
+				),
+				("sans-serif", 16),
+			)
+			.build_cartesian_2d(bbox.0..bbox.2, bbox.1..bbox.3)
+			.unwrap();
+		scatter_ctx.configure_mesh().draw().unwrap();
+		scatter_ctx
+			.draw_series(
+				self.data
+					.iter()
+					.map(|(x, y)| Circle::new((*x, *y), 3, GREEN.filled())),
+			)
+			.unwrap();
+		let x_axis = (bbox.0..bbox.2).step(bbox.4);
+		scatter_ctx
+			.draw_series(LineSeries::new(
+				x_axis
+					.values()
+					.map(|x| (x, self.ctx.theta.0 + self.ctx.theta.1 * x)),
+				&RED,
+			))
+			.expect("Couldn't draw line");
+		// To avoid the IO failure being ignored silently, we manually call the present function
+		root.present().expect(&format!(
+			"Unable to write result to file. Make sure directory {} exists",
+			self.ctx.stats_dir
+		));
+		println!("Result has been saved to {}", path);
 	}
 }
 
