@@ -12,4 +12,8 @@ fn main() {
 	dbg!(&trainer);
 	trainer.train();
 	trainer.test_accuracy();
+	match trainer.save_output(Option::None) {
+		Ok(_) => print!("Model saved"),
+		Err(e) => print!("IO Error: {}", e),
+	}
 }

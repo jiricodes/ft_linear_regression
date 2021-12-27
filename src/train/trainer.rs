@@ -7,12 +7,13 @@
 //!     - tmp_theta1 = learningRate * (1 / m) * Sum(i=0; m-1)(estimatePrice(mileage[i]) - price[i]) * mileage[i]`
 //!     - where m is length of the dataset
 use std::fs;
+use std::fs::File;
+use std::io::prelude::*;
 
 use rand::distributions::Standard;
 use rand::prelude::*;
 
 use super::arguments::CmdArgs;
-use clap::value_t;
 
 /// Main training struct
 #[derive(Debug)]
@@ -181,6 +182,22 @@ impl Trainer {
 		}
 		let avg_error = acc / self.test_set.len() as f64;
 		println!("Average error ~{:.3}", avg_error);
+	}
+
+	/// Saves labels and theta values into a file.
+	///
+	/// If the path_overwrite is `Option::None`, then `TrainerContext::outfile` is used.
+	pub fn save_output(&self, path_overwrite: Option<&str>) -> std::io::Result<()> {
+		let mut file = match path_overwrite.is_some() {
+			true => File::create(path_overwrite.unwrap())?,
+			false => File::create(&self.ctx.outfile)?,
+		};
+		let out = format!(
+			"{} {}\n{} {}\n",
+			self.labels[0], self.labels[1], self.ctx.theta.0, self.ctx.theta.1
+		);
+		file.write_all(out.as_bytes())?;
+		Ok(())
 	}
 }
 
