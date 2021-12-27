@@ -186,7 +186,7 @@ impl Trainer {
 		println!("Average error ~{:.3}", avg_error);
 	}
 
-	fn get_bounding_box(&self, offset: f64, steps: f64) -> (f64, f64, f64, f64) {
+	fn get_bounding_box(&self, offset: f64) -> (f64, f64, f64, f64) {
 		let mut x_min = std::f64::MAX;
 		let mut x_max = std::f64::MIN;
 		let mut y_min = std::f64::MAX;
@@ -229,7 +229,7 @@ impl Trainer {
 			.titled("ft_linear_regression", ("sans-serif", 40))
 			.unwrap();
 
-		let bbox = self.get_bounding_box(0.1, 100.0);
+		let bbox = self.get_bounding_box(0.1);
 		let mut scatter_ctx = ChartBuilder::on(&root)
 			.x_label_area_size(40)
 			.y_label_area_size(80)
@@ -334,6 +334,7 @@ impl TrainerContext {
 		}
 	}
 	/// Random seed setter
+	#[cfg(test)]
 	pub fn set_seed(&mut self, seed: u64) {
 		self.rng_seed = Some(seed);
 	}
