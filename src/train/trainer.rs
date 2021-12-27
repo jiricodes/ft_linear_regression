@@ -186,27 +186,23 @@ impl Trainer {
 		println!("Average error ~{:.3}", avg_error);
 	}
 
-	fn get_bounding_box(&self, offset: f64, steps: f64) -> (f64, f64, f64, f64, f64) {
+	fn get_bounding_box(&self, offset: f64, steps: f64) -> (f64, f64, f64, f64) {
 		let mut x_min = std::f64::MAX;
 		let mut x_max = std::f64::MIN;
 		let mut y_min = std::f64::MAX;
 		let mut y_max = std::f64::MIN;
+		// Find min and max values
 		for (x, y) in self.data.iter() {
 			x_min = x_min.min(*x);
 			x_max = x_max.max(*x);
 			y_min = y_min.min(*y);
 			y_max = y_max.max(*y);
 		}
-		let m = ((x_max - x_min) * (x_max - x_min) + (y_max - y_min) * (y_max - y_min)).sqrt();
+		// calculate x and y offsets
 		let x_off = (x_max - x_min) * offset;
 		let y_off = (y_max - y_min) * offset;
-		(
-			x_min - x_off,
-			y_min - y_off,
-			x_max + x_off,
-			y_max + y_off,
-			m / steps,
-		)
+
+		(x_min - x_off, y_min - y_off, x_max + x_off, y_max + y_off)
 	}
 	/// Saves labels and theta values into a file.
 	///
@@ -234,7 +230,6 @@ impl Trainer {
 			.unwrap();
 
 		let bbox = self.get_bounding_box(0.1, 100.0);
-
 		let mut scatter_ctx = ChartBuilder::on(&root)
 			.x_label_area_size(40)
 			.y_label_area_size(80)
@@ -255,12 +250,12 @@ impl Trainer {
 					.map(|(x, y)| Circle::new((*x, *y), 3, GREEN.filled())),
 			)
 			.unwrap();
-		let x_axis = (bbox.0..bbox.2).step(bbox.4);
+		let x_axis = vec![bbox.0, bbox.2];
 		scatter_ctx
 			.draw_series(LineSeries::new(
 				x_axis
-					.values()
-					.map(|x| (x, self.ctx.theta.0 + self.ctx.theta.1 * x)),
+					.iter()
+					.map(|x| (*x, self.ctx.theta.0 + self.ctx.theta.1 * *x)),
 				&RED,
 			))
 			.expect("Couldn't draw line");
