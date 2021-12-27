@@ -1,11 +1,18 @@
 BIN_DIR=bin
 TARGETS=target/release/train target/release/predict
 
+DATASET=data/subject_data.csv
+
+MAKEOPTIONS=--no-print-directory
+
 all:
-	make test
-	make build
-	make train
-	make predict
+	@echo "Running tests"
+	@make $(MAKEOPTIONS) test
+	@echo "Building"
+	@make $(MAKEOPTIONS) build
+	@echo "Training model for $(DATASET)"
+	@make $(MAKEOPTIONS) train
+	@make $(MAKEOPTIONS) predict
 
 dev-train:
 	cargo run --bin train -- -f data/subject_data.csv
@@ -14,19 +21,19 @@ doc:
 	cargo doc --no-deps --open
 
 test:
-	cargo test
+	@cargo test
 
 build:
-	cargo build --release
-	-make fclean
-	mkdir -p $(BIN_DIR)
-	mv $(TARGETS) $(BIN_DIR)/
+	@cargo build --release
+	@-make $(MAKEOPTIONS) fclean
+	@mkdir -p $(BIN_DIR)
+	@mv $(TARGETS) $(BIN_DIR)/
 
 train:
-	./$(BIN_DIR)/train -f data/subject_data.csv
+	./$(BIN_DIR)/train -f $(DATASET)
 
 predict:
-	./$(BIN_DIR)/predict -f data/model
+	./$(BIN_DIR)/predict -f data/weights
 
 fclean:
-	rm -r $(BIN_DIR)
+	@rm -r $(BIN_DIR)

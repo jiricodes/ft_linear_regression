@@ -4,12 +4,12 @@ mod arguments;
 use arguments::CmdArgs;
 
 fn main() {
+	println!("\n\t## TRAINER ##\n");
 	let cmdargs = CmdArgs::new();
 	let ctx = TrainerContext::from(&cmdargs);
 	let filename = cmdargs.get_infile();
 	println!("Input data location {}", filename);
 	let mut trainer = Trainer::load(filename, Some(ctx));
-	dbg!(&trainer);
 	trainer.train();
 	trainer.test_accuracy();
 	match trainer.save_output(Option::None) {

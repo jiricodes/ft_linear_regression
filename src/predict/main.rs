@@ -1,11 +1,17 @@
 use clap::{crate_authors, crate_name, crate_version, value_t};
 use clap::{App, Arg};
 
-fn ask_key() -> f64 {
+mod predictor;
+use predictor::Predictor;
+
+fn ask_key(labels: &[String; 2]) -> f64 {
 	use std::io::{stdin, stdout, Write};
 	let mut s = String::new();
 	let mut val: Option<f64> = Option::None;
-	println!("Please insert a key [label] to estimate [label]");
+	println!(
+		"Please insert a key [{}] to estimate [{}]",
+		labels[0], labels[1]
+	);
 	while val.is_none() {
 		let _ = stdout().flush();
 		stdin()
@@ -23,6 +29,7 @@ fn ask_key() -> f64 {
 }
 
 fn main() {
+	println!("\n\t## PREDICTOR ##\n");
 	let matches = App::new(crate_name!())
 		.author(crate_authors!("\n"))
 		.version(crate_version!())
@@ -42,6 +49,9 @@ fn main() {
 				.required(true),
 		)
 		.get_matches();
-	let val: f64 = value_t!(matches, "key", f64).unwrap_or(ask_key());
-	dbg!(val);
+	let modelfile = matches.value_of("model").unwrap();
+	let predictor = Predictor::load(modelfile);
+
+	let val: f64 = value_t!(matches, "key", f64).unwrap_or(ask_key(predictor.get_labels()));
+	predictor.predict(val);
 }
