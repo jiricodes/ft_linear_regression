@@ -1,5 +1,0 @@
-# Resources
-
-## Papers
-
-## Courses

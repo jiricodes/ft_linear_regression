@@ -69,6 +69,7 @@ fn main() {
 	let modelfile = matches.value_of("model").unwrap();
 	let predictor = Predictor::load(modelfile);
 
-	let val: f64 = value_t!(matches, "key", f64).unwrap_or(ask_key(predictor.get_labels()));
+	let val: f64 =
+		value_t!(matches, "key", f64).unwrap_or_else(|_| ask_key(predictor.get_labels()));
 	predictor.predict(val);
 }

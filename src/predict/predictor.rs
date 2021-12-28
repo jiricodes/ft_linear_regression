@@ -22,24 +22,24 @@ impl Predictor {
 	pub fn load(filename: &str) -> Self {
 		let mut labels: [String; 2] = [String::new(), String::new()];
 		let mut theta: (f64, f64) = (0.0, 0.0);
-		let contents =
-			fs::read_to_string(filename).expect(&format!("Reading \"{}\" file failed", filename));
+		let contents = fs::read_to_string(filename)
+			.unwrap_or_else(|_| panic!("Reading \"{}\" file failed", filename));
 		let mut lines = contents.lines();
 		// Take first line and split it. Assign labels.
 		let mut split = lines.next().expect("Failed to read first line").split(' ');
-		labels[0] = split.next().unwrap_or_else(|| "").trim().parse().unwrap();
-		labels[1] = split.next().unwrap_or_else(|| "").trim().parse().unwrap();
+		labels[0] = split.next().unwrap_or("").trim().parse().unwrap();
+		labels[1] = split.next().unwrap_or("").trim().parse().unwrap();
 		// Take second line and split it. Assign thetas.
 		let mut split = lines.next().expect("Failed to read second line").split(' ');
 		theta.0 = split
 			.next()
-			.unwrap_or_else(|| "")
+			.unwrap_or("")
 			.trim()
 			.parse()
 			.expect("Failed to parse theta0");
 		theta.1 = split
 			.next()
-			.unwrap_or_else(|| "")
+			.unwrap_or("")
 			.trim()
 			.parse()
 			.expect("Failed to parse theta1");

@@ -3,7 +3,7 @@
 //! ## Example
 //!
 //! <a href="../../../resources/example.png">
-//! 	<img src="../../../resources/example.png"></img>
+//!     <img src="../../../resources/example.png"></img>
 //! </a>
 //!
 //! ## Usage

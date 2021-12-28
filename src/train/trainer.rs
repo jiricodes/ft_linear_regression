@@ -41,42 +41,22 @@ impl Trainer {
 	/// each line is parsed to f64
 	///
 	pub fn load(filename: &str, ctx: Option<TrainerContext>) -> Self {
-		let contents =
-			fs::read_to_string(filename).expect(&format!("Reading \"{}\" file failed", filename));
+		let contents = fs::read_to_string(filename)
+			.unwrap_or_else(|_| panic!("Reading \"{}\" file failed", filename));
 		let mut data: Vec<(f64, f64)> = Vec::new();
 		let mut labels: [String; 2] = [String::default(), String::default()];
 		for (line_num, line) in contents.lines().enumerate() {
-			if line.len() == 0 {
+			if line.is_empty() {
 				continue;
 			}
 			let mut split_line = line.split(',');
 			if line_num != 0 {
-				let x: f64 = split_line
-					.next()
-					.unwrap_or_else(|| "")
-					.trim()
-					.parse()
-					.unwrap();
-				let y: f64 = split_line
-					.next()
-					.unwrap_or_else(|| "")
-					.trim()
-					.parse()
-					.unwrap();
+				let x: f64 = split_line.next().unwrap_or("").trim().parse().unwrap();
+				let y: f64 = split_line.next().unwrap_or("").trim().parse().unwrap();
 				data.push((x, y));
 			} else {
-				labels[0] = split_line
-					.next()
-					.unwrap_or_else(|| "")
-					.trim()
-					.parse()
-					.unwrap();
-				labels[1] = split_line
-					.next()
-					.unwrap_or_else(|| "")
-					.trim()
-					.parse()
-					.unwrap();
+				labels[0] = split_line.next().unwrap_or("").trim().parse().unwrap();
+				labels[1] = split_line.next().unwrap_or("").trim().parse().unwrap();
 			}
 		}
 		Self {
@@ -169,11 +149,11 @@ impl Trainer {
 		);
 
 		// Scale theta1 back
-		self.ctx.theta.1 = self.ctx.theta.1 / (extremes.1 - extremes.0);
+		self.ctx.theta.1 /= extremes.1 - extremes.0;
 	}
 
 	pub fn test_accuracy(&mut self) {
-		if self.test_set.len() == 0 {
+		if self.test_set.is_empty() {
 			println!("No test set available");
 			return;
 		}
@@ -243,8 +223,8 @@ impl Trainer {
 		scatter_ctx
 			.configure_mesh()
 			.light_line_style(&WHITE)
-			.x_desc(format!("{}", self.labels[0]))
-			.y_desc(format!("{}", self.labels[1]))
+			.x_desc(&self.labels[0])
+			.y_desc(&self.labels[1])
 			.axis_desc_style(("sans-serif", 40))
 			.label_style(("sans-serif", 22))
 			.draw()
@@ -267,10 +247,12 @@ impl Trainer {
 			))
 			.expect("Couldn't draw line");
 		// To avoid the IO failure being ignored silently, we manually call the present function
-		root.present().expect(&format!(
-			"Unable to write result to file. Make sure directory {} exists",
-			self.ctx.stats_dir
-		));
+		root.present().unwrap_or_else(|_| {
+			panic!(
+				"Unable to write result to file. Make sure directory {} exists",
+				self.ctx.stats_dir
+			)
+		});
 		println!("Result has been saved to {}", path);
 	}
 
