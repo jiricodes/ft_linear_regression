@@ -1,5 +1,11 @@
 //! # Linear regression model trainer
 //! This binary takes a dataset and creates a model for estimating values from it.
+//! ## Example
+//!
+//! <a href="../../../resources/example.png">
+//! 	<img src="../../../resources/example.png"></img>
+//! </a>
+//!
 //! ## Usage
 //! ```text
 //! USAGE:

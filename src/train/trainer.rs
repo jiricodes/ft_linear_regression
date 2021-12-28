@@ -30,6 +30,8 @@ pub struct Trainer {
 	test_set: Vec<(f64, f64)>,
 	/// Training set
 	train_set: Vec<(f64, f64)>,
+	/// Relative error
+	avg_error: Option<f64>,
 }
 
 impl Trainer {
@@ -83,6 +85,7 @@ impl Trainer {
 			labels,
 			test_set: Vec::new(),
 			train_set: Vec::new(),
+			avg_error: Option::None,
 		}
 	}
 
@@ -169,7 +172,7 @@ impl Trainer {
 		self.ctx.theta.1 = self.ctx.theta.1 / (extremes.1 - extremes.0);
 	}
 
-	pub fn test_accuracy(&self) {
+	pub fn test_accuracy(&mut self) {
 		if self.test_set.len() == 0 {
 			println!("No test set available");
 			return;
@@ -182,8 +185,8 @@ impl Trainer {
 			let est = self.ctx.theta.0 + (self.ctx.theta.1 * key);
 			acc += (val - est).abs() / est;
 		}
-		let avg_error = acc / self.test_set.len() as f64;
-		println!("Average error ~{:.3}", avg_error);
+		self.avg_error = Some(acc / self.test_set.len() as f64);
+		println!("Average error ~{:.3}", self.avg_error.unwrap());
 	}
 
 	fn get_bounding_box(&self, offset: f64) -> (f64, f64, f64, f64) {
@@ -223,26 +226,27 @@ impl Trainer {
 	pub fn plot_result(&self) {
 		let path = format!("{}/result.png", self.ctx.stats_dir);
 
-		let root = BitMapBackend::new(&path, (1024, 768)).into_drawing_area();
+		let root = BitMapBackend::new(&path, (1920, 1080)).into_drawing_area();
 		root.fill(&WHITE).expect("Failed to fill the graph");
 		let root = root
-			.titled("ft_linear_regression", ("sans-serif", 40))
+			.titled("ft_linear_regression", ("sans-serif", 60))
 			.unwrap();
 
 		let bbox = self.get_bounding_box(0.1);
 		let mut scatter_ctx = ChartBuilder::on(&root)
-			.x_label_area_size(40)
-			.y_label_area_size(80)
-			.caption(
-				&format!(
-					"seed: {:?}; ratio {}",
-					self.ctx.rng_seed, self.ctx.training_distribution
-				),
-				("sans-serif", 16),
-			)
+			.x_label_area_size(80)
+			.y_label_area_size(120)
+			.caption(&self.get_summary(), ("sans-serif", 30))
 			.build_cartesian_2d(bbox.0..bbox.2, bbox.1..bbox.3)
 			.unwrap();
-		scatter_ctx.configure_mesh().draw().unwrap();
+		scatter_ctx
+			.configure_mesh()
+			.light_line_style(&WHITE)
+			.x_desc(format!("{}", self.labels[0]))
+			.y_desc(format!("{}", self.labels[1]))
+			.axis_desc_style(("sans-serif", 30))
+			.draw()
+			.unwrap();
 		scatter_ctx
 			.draw_series(
 				self.data
@@ -265,6 +269,15 @@ impl Trainer {
 			self.ctx.stats_dir
 		));
 		println!("Result has been saved to {}", path);
+	}
+
+	fn get_summary(&self) -> String {
+		format!(
+			"seed {}; distribution ratio {:.2}; avg_error {:.3}",
+			self.ctx.rng_seed.unwrap_or(0),
+			self.ctx.training_distribution,
+			self.avg_error.unwrap_or(f64::NAN)
+		)
 	}
 }
 
