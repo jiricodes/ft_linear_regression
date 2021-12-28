@@ -203,14 +203,12 @@ impl Trainer {
 		Ok(())
 	}
 
-	pub fn plot_result(&self) {
+	pub fn plot_result(&self) -> Result<(), Box<dyn std::error::Error>> {
 		let path = format!("{}/result.png", self.ctx.stats_dir);
 
 		let root = BitMapBackend::new(&path, (1920, 1080)).into_drawing_area();
-		root.fill(&WHITE).expect("Failed to fill the graph");
-		let root = root
-			.titled("ft_linear_regression", ("sans-serif", 60))
-			.unwrap();
+		root.fill(&WHITE)?;
+		let root = root.titled("ft_linear_regression", ("sans-serif", 60))?;
 
 		let bbox = self.get_bounding_box(0.1);
 		let mut scatter_ctx = ChartBuilder::on(&root)
@@ -218,8 +216,7 @@ impl Trainer {
 			.y_label_area_size(120)
 			.margin(5)
 			.caption(&self.get_summary(), ("sans-serif", 30))
-			.build_cartesian_2d(bbox.0..bbox.2, bbox.1..bbox.3)
-			.unwrap();
+			.build_cartesian_2d(bbox.0..bbox.2, bbox.1..bbox.3)?;
 		scatter_ctx
 			.configure_mesh()
 			.light_line_style(&WHITE)
@@ -227,33 +224,24 @@ impl Trainer {
 			.y_desc(&self.labels[1])
 			.axis_desc_style(("sans-serif", 40))
 			.label_style(("sans-serif", 22))
-			.draw()
-			.unwrap();
-		scatter_ctx
-			.draw_series(
-				self.data
-					.iter()
-					.map(|(x, y)| Circle::new((*x, *y), 5, GREEN.filled())),
-			)
-			.unwrap();
+			.draw()?;
+		scatter_ctx.draw_series(
+			self.data
+				.iter()
+				.map(|(x, y)| Circle::new((*x, *y), 5, GREEN.filled())),
+		)?;
 		let x_axis = vec![bbox.0, bbox.2];
 		let color = Palette99::pick(0).stroke_width(3);
-		scatter_ctx
-			.draw_series(LineSeries::new(
-				x_axis
-					.iter()
-					.map(|x| (*x, self.ctx.theta.0 + self.ctx.theta.1 * *x)),
-				color,
-			))
-			.expect("Couldn't draw line");
+		scatter_ctx.draw_series(LineSeries::new(
+			x_axis
+				.iter()
+				.map(|x| (*x, self.ctx.theta.0 + self.ctx.theta.1 * *x)),
+			color,
+		))?;
 		// To avoid the IO failure being ignored silently, we manually call the present function
-		root.present().unwrap_or_else(|_| {
-			panic!(
-				"Unable to write result to file. Make sure directory {} exists",
-				self.ctx.stats_dir
-			)
-		});
+		root.present()?;
 		println!("Result has been saved to {}", path);
+		Ok(())
 	}
 
 	fn get_summary(&self) -> String {

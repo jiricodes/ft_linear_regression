@@ -1,4 +1,5 @@
 BIN_DIR=bin
+STATS_DIR=stats
 TARGETS=target/release/train target/release/predict
 
 DATASET=data/subject_data.csv
@@ -34,6 +35,7 @@ build:
 	@mv $(TARGETS) $(BIN_DIR)/
 
 train:
+	@mkdir -p $(STATS_DIR)
 	./$(BIN_DIR)/train -f $(DATASET)
 
 predict:

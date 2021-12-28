@@ -30,9 +30,11 @@ mod trainer;
 use trainer::{Trainer, TrainerContext};
 mod arguments;
 use arguments::CmdArgs;
+mod result;
+use result::{Result, TrainError};
 
 /// Main
-fn main() {
+fn main() -> Result<()> {
 	println!("\n\t## TRAINER ##\n");
 	let cmdargs = CmdArgs::new();
 	let ctx = TrainerContext::from(&cmdargs);
@@ -41,9 +43,10 @@ fn main() {
 	let mut trainer = Trainer::load(filename, Some(ctx));
 	trainer.train();
 	trainer.test_accuracy();
-	match trainer.save_output(Option::None) {
-		Ok(_) => println!("Model saved"),
-		Err(e) => println!("IO Error: {}", e),
+	trainer.save_output(Option::None)?;
+	match trainer.plot_result() {
+		Ok(_) => {}
+		Err(e) => return Err(TrainError::Custom(format!("Plotter Error: {:?}", e))),
 	}
-	trainer.plot_result();
+	Ok(())
 }
