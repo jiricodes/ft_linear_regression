@@ -2,6 +2,7 @@
 //!
 //! Handles model loading and predictions based on input.
 use std::fs;
+use std::io::Result;
 
 #[derive(Debug)]
 pub struct Predictor {
@@ -19,11 +20,10 @@ impl Predictor {
 	/// ```
 	/// where labels are string and theta is [`f64`](https://doc.rust-lang.org/std/primitive.f64.html) compatible
 	///
-	pub fn load(filename: &str) -> Self {
+	pub fn load(filename: &str) -> Result<Self> {
 		let mut labels: [String; 2] = [String::new(), String::new()];
 		let mut theta: (f64, f64) = (0.0, 0.0);
-		let contents = fs::read_to_string(filename)
-			.unwrap_or_else(|_| panic!("Reading \"{}\" file failed", filename));
+		let contents = fs::read_to_string(filename)?;
 		let mut lines = contents.lines();
 		// Take first line and split it. Assign labels.
 		let mut split = lines.next().expect("Failed to read first line").split(' ');
@@ -43,7 +43,7 @@ impl Predictor {
 			.trim()
 			.parse()
 			.expect("Failed to parse theta1");
-		Self { labels, theta }
+		Ok(Self { labels, theta })
 	}
 
 	/// Labels getter

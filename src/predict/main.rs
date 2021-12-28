@@ -18,6 +18,7 @@ use clap::{App, Arg};
 
 mod predictor;
 use predictor::Predictor;
+use std::io::Result;
 /// Handles user input
 ///
 /// Helper function that handles user input.
@@ -45,7 +46,7 @@ fn ask_key(labels: &[String; 2]) -> f64 {
 	val.unwrap()
 }
 /// Main
-fn main() {
+fn main() -> Result<()> {
 	println!("\n\t## PREDICTOR ##\n");
 	let matches = App::new(crate_name!())
 		.author(crate_authors!("\n"))
@@ -67,9 +68,10 @@ fn main() {
 		)
 		.get_matches();
 	let modelfile = matches.value_of("model").unwrap();
-	let predictor = Predictor::load(modelfile);
+	let predictor = Predictor::load(modelfile)?;
 
 	let val: f64 =
 		value_t!(matches, "key", f64).unwrap_or_else(|_| ask_key(predictor.get_labels()));
 	predictor.predict(val);
+	Ok(())
 }
