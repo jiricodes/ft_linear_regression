@@ -71,7 +71,3 @@ Runs `cargo test`
 make doc
 ```
 Compiles and opens documentation
-
-
-## To-Do
-- Error management - currently panics
