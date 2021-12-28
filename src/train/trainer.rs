@@ -236,6 +236,7 @@ impl Trainer {
 		let mut scatter_ctx = ChartBuilder::on(&root)
 			.x_label_area_size(80)
 			.y_label_area_size(120)
+			.margin(5)
 			.caption(&self.get_summary(), ("sans-serif", 30))
 			.build_cartesian_2d(bbox.0..bbox.2, bbox.1..bbox.3)
 			.unwrap();
@@ -244,23 +245,25 @@ impl Trainer {
 			.light_line_style(&WHITE)
 			.x_desc(format!("{}", self.labels[0]))
 			.y_desc(format!("{}", self.labels[1]))
-			.axis_desc_style(("sans-serif", 30))
+			.axis_desc_style(("sans-serif", 40))
+			.label_style(("sans-serif", 22))
 			.draw()
 			.unwrap();
 		scatter_ctx
 			.draw_series(
 				self.data
 					.iter()
-					.map(|(x, y)| Circle::new((*x, *y), 3, GREEN.filled())),
+					.map(|(x, y)| Circle::new((*x, *y), 5, GREEN.filled())),
 			)
 			.unwrap();
 		let x_axis = vec![bbox.0, bbox.2];
+		let color = Palette99::pick(0).stroke_width(3);
 		scatter_ctx
 			.draw_series(LineSeries::new(
 				x_axis
 					.iter()
 					.map(|x| (*x, self.ctx.theta.0 + self.ctx.theta.1 * *x)),
-				&RED,
+				color,
 			))
 			.expect("Couldn't draw line");
 		// To avoid the IO failure being ignored silently, we manually call the present function
