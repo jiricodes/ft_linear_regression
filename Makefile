@@ -16,8 +16,13 @@ all:
 	@make $(MAKEOPTIONS) predict
 	@open stats/result.png
 
-rust:
+install:
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	sudo apt-get install cmake libfreetype6-dev libfontconfig1-dev xclip
+
+unistall:
+	sudo apt-get purge cmake libfreetype6-dev libfontconfig1-dev xclip
+	rustup self uninstall
 
 dev-train:
 	cargo run --bin train -- -f data/subject_data.csv
