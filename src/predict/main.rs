@@ -56,6 +56,7 @@ fn main() -> Result<()> {
 				.short("k")
 				.long("key")
 				.takes_value(true)
+				.allow_hyphen_values(true)
 				.help("Key to use in value estimation, using trained linear regression model."),
 		)
 		.arg(

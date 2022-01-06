@@ -4,7 +4,9 @@ This project is the first step into AI and Machine Learning under 42 curriculum 
 ![](resources/example.png)
 
 ## Requirements
-Only installed rustup is required. It can be easily done with `make rust` from the root of this repo.
+Installed rust is required and the plotting crate also requires following cmake and other dependencies. Everything can be installed with `make install` and removed with `make uninstall`. Or manually:
+- rust `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+- plotters dependencies `sudo apt-get install cmake libfreetype6-dev libfontconfig1-dev xclip`
 
 ## Usage
 The basic usage is to run `train` binary on your data. Then running `predict` binary supplying previously trained model.
