@@ -1,7 +1,12 @@
 # ft_linear_regression
+## Final grade
+<img src="resources/grade.png" width="100">
+
+## Intro
 This project is the first step into AI and Machine Learning under 42 curriculum at Hive Helsinki. Basic machine learning algorithm and program that predicts the price of a car by using a linear regression function with a gradient descent algorithm.
 
-![](resources/example.png)
+## Plot Preview
+<img src="resources/example.png" width="700">
 
 ## Requirements
 Installed rust is required and the plotting crate also requires following cmake and other dependencies. Everything can be installed with `make install` and removed with `make uninstall`. Or manually:
